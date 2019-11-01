@@ -24,6 +24,7 @@ When request URL is <b>/posts/update/123?param2=abc</b>, this code will invoke a
     'default_controller'=>'site',
     'default_action'=>'index',
     'Controller'=>'Controller',
+    'controller_namespace'=>'app\Controllers',
 
 
 # License
