@@ -1,0 +1,22 @@
+{
+    "name": "admirhodzic/nano-router",
+    "description": "Nano router for PHP apps",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Admir Hodžić",
+            "email": "admirhodzic@bih.net.ba"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {"admirhodzic\\NanoRouter\\": "src/"}
+    },    
+    "require": {
+        "php": ">=5.4.0"        
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+      }    
+}
