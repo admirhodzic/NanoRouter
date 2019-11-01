@@ -1,5 +1,6 @@
 # NanoRouter
-nano router for PHP apps
+Nano-size router for PHP apps in just 20 lines of code.
+
 
 # Install
 
