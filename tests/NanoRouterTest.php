@@ -13,6 +13,10 @@ class SiteController
     {
         return 'ok';
     }
+    public function actionOther($id)
+    {
+        return 'other '.$id;
+    }
     public function getPosts($filter='')
     {
         return $filter;
@@ -82,5 +86,61 @@ final class NanoRouterTest extends TestCase
         $_SERVER['REQUEST_METHOD']='GET';
 
         NanoRouter::run();
+    }
+
+    public function testCustomRoutes(): void
+    {
+        $_SERVER['REQUEST_METHOD']='GET';
+
+        $_SERVER['REQUEST_URI']='r1';
+        $this->assertEquals(
+            NanoRouter::run([
+                'routes'=>[
+                    'r1/a1'=>'site/index',
+                    'r1'=>'site/other',
+                ]
+            ]),
+            'other '
+        );
+        $_SERVER['REQUEST_URI']='r1/a1?dummy';
+        $this->assertEquals(
+            NanoRouter::run([
+                'routes'=>[
+                    'r1/a1'=>'site/index',
+                    'r1'=>'site/other',
+                ]
+            ]),
+            'ok'
+        );
+        $_SERVER['REQUEST_URI']='r1/a1/1122';
+        $this->assertEquals(
+            NanoRouter::run([
+                'routes'=>[
+                    'r1/a1/(?<id>[0-9]*)'=>function ($p) {
+                        return 'site/other/'.$p['id'];
+                    },
+                ]
+            ]),
+            'other 1122'
+        );
+        $_SERVER['REQUEST_URI']='r1/a1/5';
+        $this->assertEquals(
+            NanoRouter::run([
+                'routes'=>[
+                    'r1/a1(/(?<id>[0-9]*))?'=>function ($p) {
+                        return $p['id']==5?'site/other/99':'site/index';
+                    },
+                ]
+            ]),
+            'other 99'
+        );
+        $this->expectException(Exception::class);
+        $_SERVER['REQUEST_URI']='route22/sdfs';
+        NanoRouter::run([
+            'routes'=>[
+                'r1'=>'site/index',
+                'r1/a1'=>'site/index',
+            ]
+        ]);
     }
 }

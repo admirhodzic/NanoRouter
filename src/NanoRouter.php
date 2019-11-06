@@ -22,6 +22,25 @@ final class NanoRouter
         );
 
         $uri = trim(rawurldecode(((false !== $pos = strpos($_SERVER['REQUEST_URI'], '?')))?substr($_SERVER['REQUEST_URI'], 0, $pos):$_SERVER['REQUEST_URI']), '/');
+        $req=$_REQUEST;
+        if (isset($options['routes'])) {
+            $params=[];
+            foreach ($options['routes'] as $p=>$a) {
+                if ($p==$uri || preg_match('/'.str_replace('/', '\\/', $p).'/', $uri, $params)) {
+                    if (is_string($a)) {
+                        $uri=$a;
+                    } else {
+                        $uri=$a($params);
+                    }
+                    //add url named params to request params
+                    foreach ($params as $k=>$v) {
+                        if (\is_string($k)) {
+                            $req[$k]=$v;
+                        }
+                    }
+                }
+            }
+        }
         list($controller, $action, $id)=array_filter(explode("/", $uri))+[$options['default_controller'],$options['default_action'],null];
         $cmodel=(isset($options['controller_namespace'])?('\\'.\trim($options['controller_namespace'], ' \\').'\\'):'').ucfirst($controller).$options['Controller'];
         try {
@@ -43,7 +62,7 @@ final class NanoRouter
         $ref = new \ReflectionMethod($controller, $act);
         foreach ($ref->getParameters() as $param) {
             $name = $param->name;
-            $params[$name]=($name=='id')?$id:(isset($_REQUEST[$name])?$_REQUEST[$name]:($param->isDefaultValueAvailable()?$param->getDefaultValue():(self::raise_error('required parameter missing: '.$name))));
+            $params[$name]=($name=='id')?$id:(isset($req[$name])?$req[$name]:($param->isDefaultValueAvailable()?$param->getDefaultValue():(self::raise_error('required parameter missing: '.$name))));
         }
 
         //call

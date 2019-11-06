@@ -32,9 +32,16 @@ This way, for GET request, 'getPosts' function will be called, for POST request,
 
     'default_controller'=>'site',
     'default_action'=>'index',
-    'Controller'=>'Controller',
+    'Controller'=>'Controller', //suffix of controller class name
     'controller_namespace'=>'app\Controllers',
-
+    'routes'=>[
+        //...custom routes. eg:
+        '/login'=>'site/login',
+        'r1/a1(/(?<id>[0-9]*))?'=>function ($p) {  // this matches ra/ar with optional numeric id
+                return isset($p['id']) ? ('site/other/'.$p['id']) : 'site/index'; //function receives extracted parameters and returns new <controller>/<action>/<id> URI
+            },
+        //routes order must be from most specific to general routes
+    ]
 
 # License
 MIT
