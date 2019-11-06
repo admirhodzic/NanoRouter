@@ -37,11 +37,17 @@ This way, for GET request, 'getPosts' function will be called, for POST request,
     'controller_namespace'=>'app\Controllers',
     'routes'=>[
         //...custom routes. eg:
-        '/login'=>'site/login',
-        'r1/a1(/(?<id>[0-9]*))?'=>function ($p) {  // this matches ra/ar with optional numeric id
-                return isset($p['id']) ? ('site/other/'.$p['id']) : 'site/index'; //function receives extracted parameters and returns new <controller>/<action>/<id> URI
+        
+        '/login'=>'site/login', 
+        
+        ///////////////       value is new URI string or a function which receives preg matches and returns a string
+
+        'r1/a1(/(?<id>[0-9]*))?'=>function ($p) {  ///////////// this matches r1/ar with optional numeric id
+                //function receives extracted parameters and returns new <controller>/<action>/<id> URI
+                return isset($p['id']) ? ('site/other/'.$p['id']) : 'site/index'; 
             },
-        //routes order must be from most specific to general routes
+        
+        ///////////////       routes order must be from most specific to general routes
     ]
 
 # License
